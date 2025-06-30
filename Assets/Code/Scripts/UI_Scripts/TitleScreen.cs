@@ -6,9 +6,10 @@ using UnityEditor;
 
 public class TitleScreen : MonoBehaviour
 {
-
     [SerializeField] private RectTransform _titleScreenTab;
     [SerializeField] private RectTransform _hostScreenTab;
+    [SerializeField] private RectTransform _joinScreenTab;
+    [SerializeField] private RectTransform _playerListTab;
 
 #if UNITY_EDITOR
     public void QuitGame() => EditorApplication.isPlaying = false;
@@ -16,20 +17,11 @@ public class TitleScreen : MonoBehaviour
     public void QuitGame() => Application.Quit();
 #endif
 
-    public void ReturnToMainTab()
+    private void OnEnable()
     {
         _titleScreenTab.gameObject.SetActive(true);
         _hostScreenTab.gameObject.SetActive(false);
-    }
-
-    public void HostGame()
-    {
-        _titleScreenTab.gameObject.SetActive(false);
-        _hostScreenTab.gameObject.SetActive(true);
-    }
-
-    public void JoinGame()
-    {
-
+        _joinScreenTab.gameObject.SetActive(false);
+        _playerListTab.gameObject.SetActive(false);
     }
 }
