@@ -14,31 +14,27 @@ public class PongBall : MonoBehaviour
 
     private Rigidbody _rb;
     private Vector3 _linearVelocity;
-
-    //[Server]
+    
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
     }
 
-    //[Server]
     private void OnEnable()
     {
         Vector3 startingDir = UnityEngine.Random.value > 0.5f? Vector3.left: Vector3.right;
         _rb.linearVelocity = startingDir * _startingSpeed;
     }
-
-    //[Server]
+    
     private void Update()
     {
         if(_rb.linearVelocity != Vector3.zero)
             _linearVelocity = _rb.linearVelocity;
 
+        //Clamp max linear velocity
         _rb.maxLinearVelocity = _maxLinearSpeed;
-        Debug.Log(_rb.linearVelocity.magnitude);
     }
-
-    //[Server]
+    
     private void OnCollisionEnter(Collision collision)
     {
         //Get linear velocity
@@ -48,7 +44,7 @@ public class PongBall : MonoBehaviour
         //Reflect linear velocity with normal
         Vector3 newLinearVelocity = Vector3.Reflect(_linearVelocity, collisionNormal);
 
-
+        //Increase linear velocity
         Vector3 linearVelocityIncrease = newLinearVelocity * _speedMultiplierOnCollision;
         _rb.linearVelocity = newLinearVelocity + linearVelocityIncrease;
 
