@@ -3,11 +3,18 @@ using UnityEngine;
 
 public class PongRacket : NetworkBehaviour
 {
+    [SyncVar(hook = "HandleNameChange")]
+    public string RacketName = "Player";
+
     #region Client
     public override void OnStartClient()
     {
         base.OnStartClient();
+    }
 
+    private void HandleNameChange(string oldName, string newName)
+    {
+        Debug.Log($"Name Changed from {oldName} to {newName}");
     }
 
     private void Update()

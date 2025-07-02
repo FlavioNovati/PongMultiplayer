@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Levels/Scenes/ManagementScene.unity
+    guid: 1240bd2bdbdddd742b0f6c22b64ede23
+  - enabled: 1
     path: Assets/Levels/Scenes/PongGameScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
