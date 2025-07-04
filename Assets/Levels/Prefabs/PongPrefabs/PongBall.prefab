@@ -53,9 +53,6 @@ MonoBehaviour:
   _startingSpeed: 1
   _maxLinearSpeed: 15
   _speedMultiplierOnCollision: 0.5
-  OnCollision:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!54 &4009294041534962071
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -102,7 +99,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.27
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3050377509964473572
 MonoBehaviour:
@@ -127,17 +124,17 @@ MonoBehaviour:
   compressRotation: 1
   interpolatePosition: 1
   interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
+  interpolateScale: 0
+  coordinateSpace: 1
+  timelineOffset: 0
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   onlySyncOnChangeCorrectionMultiplier: 2
   useFixedUpdate: 0
   rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
+  positionPrecision: 0.001
+  scalePrecision: 1
 --- !u!114 &106561957715038960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +179,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6138106983072838574}
@@ -269,7 +266,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6138106983072838574}
