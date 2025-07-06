@@ -6,22 +6,19 @@ using UnityEngine.Serialization;
 
 using Mirror;
 
-public class GameManager : NetworkBehaviour
+public class MatchManager : MonoBehaviour
 {
-    public static event Action OnMatchStop;
-    public static event Action OnMatchStart;
     public static event Action OnMatchCanStart;
     public static event Action OnMatchCannotStart;
 
     private Dictionary<int, PongPlayer> _playerDictionary;
-    private MatchManager _matchManager;
-
-    #region SERVER
-    public override void OnStartServer()
+    private MatchController _matchController;
+    
+    private void OnEnable()
     {
         _playerDictionary = new Dictionary<int, PongPlayer>();
 
-        _matchManager = FindFirstObjectByType<MatchManager>();
+        _matchController = FindFirstObjectByType<MatchController>();
 
         PongNetworkManager.OnServerAddedPlayer += HandlePlayerAdded;
         PongNetworkManager.OnServerRemovedPlayer += HandlePlayerRemoved;
@@ -33,24 +30,7 @@ public class GameManager : NetworkBehaviour
 
         //Invoke Callback
         if (_playerDictionary.Count > 1)
-            StartMatch();
-    }
-
-    private void StartMatch()
-    {
-        Debug.Log("Start Match", this);
-
-        //Get Players
-        List<PongPlayer> pongPlayers = new List<PongPlayer>();
-        foreach (var connectedPlayer in _playerDictionary.Values)
-            pongPlayers.Add(connectedPlayer);
-
-        //Connect Players
-        _matchManager.ConnectPlayers(pongPlayers);
-
-        //Start Match Manager Match
-        _matchManager.StartMatch();
-        OnMatchCanStart?.Invoke();
+            OnMatchCanStart?.Invoke();
     }
 
     private void HandlePlayerRemoved(int playerID)
@@ -60,5 +40,21 @@ public class GameManager : NetworkBehaviour
         //Invoke Callback
         OnMatchCannotStart?.Invoke();
     }
-    #endregion
+
+    public void StartMatch()
+    {
+        Debug.Log("Start Match", this);
+
+        //Convert Dictionary into a List
+        List<PongPlayer> pongPlayers = new List<PongPlayer>();
+        foreach (var connectedPlayer in _playerDictionary.Values)
+            pongPlayers.Add(connectedPlayer);
+
+        //Connect Players
+        _matchController.ConnectPlayers(pongPlayers);
+
+        //Start Match Manager Match
+        _matchController.StartMatch();
+        OnMatchCanStart?.Invoke();
+    }
 }

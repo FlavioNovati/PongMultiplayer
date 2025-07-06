@@ -1,9 +1,15 @@
+using System;
 using System.Collections.Generic;
+
 using UnityEngine;
+
 using Mirror;
 
-public class MatchManager : NetworkBehaviour
+public class MatchController : NetworkBehaviour
 {
+    public static event Action OnMatchStop;
+    public static event Action OnMatchStart;
+
     [SerializeField] private PongRacket _lRacket;
     [SerializeField] private PongRacket _rRacket;
     [SerializeField] private PongBall _ball;
