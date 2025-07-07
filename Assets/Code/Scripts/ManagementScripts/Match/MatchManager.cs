@@ -14,11 +14,13 @@ public class MatchManager : MonoBehaviour
     private Dictionary<int, PongPlayer> _playerDictionary;
     private MatchController _matchController;
     
+    private bool _isPlaying;
+
     private void OnEnable()
     {
         _playerDictionary = new Dictionary<int, PongPlayer>();
 
-        _matchController = FindFirstObjectByType<MatchController>();
+        _matchController = FindFirstObjectByType<MatchController>(FindObjectsInactive.Include);
 
         PongNetworkManager.OnServerAddedPlayer += HandlePlayerAdded;
         PongNetworkManager.OnServerRemovedPlayer += HandlePlayerRemoved;
@@ -43,8 +45,6 @@ public class MatchManager : MonoBehaviour
 
     public void StartMatch()
     {
-        Debug.Log("Start Match", this);
-
         //Convert Dictionary into a List
         List<PongPlayer> pongPlayers = new List<PongPlayer>();
         foreach (var connectedPlayer in _playerDictionary.Values)
@@ -55,6 +55,12 @@ public class MatchManager : MonoBehaviour
 
         //Start Match Manager Match
         _matchController.StartMatch();
-        OnMatchCanStart?.Invoke();
+        _isPlaying = true;
+    }
+
+    public void StopMatch()
+    {
+        _matchController.ResetMatch();
+        _isPlaying = false;
     }
 }

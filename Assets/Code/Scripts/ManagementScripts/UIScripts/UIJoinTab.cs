@@ -1,23 +1,23 @@
 using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine;
 using UnityEngine.Serialization;
 using Mirror;
 
-public class UIHostTab : MonoBehaviour
+public class UIJoinTab : MonoBehaviour
 {
     [FormerlySerializedAs("Nework Address Input Field")]
     [SerializeField] private TMP_InputField _networkAddressField;
-    [SerializeField] private Button _hostButton;
+    [SerializeField] private Button _joinButton;
 
     private void Awake()
     {
-        _networkAddressField.onSubmit.AddListener(delegate { OnNetworkAddressChanged(); } );
+        _networkAddressField.onSubmit.AddListener(delegate { OnNetworkAddressChanged(); });
     }
 
     private void OnEnable()
     {
-        _hostButton.interactable = false;
+        _joinButton.interactable = false;
         _networkAddressField.text = string.Empty;
     }
 
@@ -27,16 +27,16 @@ public class UIHostTab : MonoBehaviour
         address.Replace(' ', '_');
 
         if (string.IsNullOrEmpty(address))
-            _hostButton.interactable = false;
+            _joinButton.interactable = false;
         else
-            _hostButton.interactable = true;
+            _joinButton.interactable = true;
     }
 
-    public void HostLobby()
+    public void JoinLobby()
     {
         string networkAddress = _networkAddressField.text;
 
         NetworkManager.singleton.networkAddress = networkAddress;
-        NetworkManager.singleton.StartHost();
+        NetworkManager.singleton.StartClient();
     }
 }
