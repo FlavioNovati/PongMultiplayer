@@ -1,4 +1,6 @@
 #if UNITY_EDITOR
+using Mirror;
+using System;
 using Unity.VisualScripting;
 using UnityEditor;
 #endif
@@ -9,6 +11,7 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private RectTransform _gameUI;
     [SerializeField] private RectTransform _titleUI;
+    [SerializeField] private RectTransform _disconnectionUI;
     
     private void OnEnable()
     {
@@ -16,13 +19,15 @@ public class UIManager : MonoBehaviour
         _titleUI.gameObject.SetActive(true);
 
         MatchController.OnMatchStart += SetGameUI;
-        MatchController.OnMatchStop += SetTitle;
+        MatchController.OnMatchStop += SetTitleUI;
+        MatchManager.OnMatchInterrupted += SetDisconnetUI;
     }
 
     private void OnDisable()
     {
         MatchController.OnMatchStart -= SetGameUI;
-        MatchController.OnMatchStop -= SetTitle;
+        MatchController.OnMatchStop -= SetTitleUI;
+        MatchManager.OnMatchInterrupted -= SetDisconnetUI;
     }
 
     private void SetGameUI()
@@ -31,10 +36,16 @@ public class UIManager : MonoBehaviour
         _titleUI.gameObject.SetActive(false);
     }
 
-    private void SetTitle()
+    private void SetTitleUI()
     {
         _gameUI.gameObject.SetActive(false);
         _titleUI.gameObject.SetActive(true);
+    }
+
+    private void SetDisconnetUI()
+    {
+        _disconnectionUI.gameObject.SetActive(true);
+        SetTitleUI();
     }
 
 #if UNITY_EDITOR

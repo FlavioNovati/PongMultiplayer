@@ -10,6 +10,7 @@ public class MatchManager : MonoBehaviour
 {
     public static event Action OnMatchCanStart;
     public static event Action OnMatchCannotStart;
+    public static event Action OnMatchInterrupted;
 
     private Dictionary<int, PongPlayer> _playerDictionary;
     private MatchController _matchController;
@@ -24,6 +25,25 @@ public class MatchManager : MonoBehaviour
 
         PongNetworkManager.OnServerAddedPlayer += HandlePlayerAdded;
         PongNetworkManager.OnServerRemovedPlayer += HandlePlayerRemoved;
+    }
+
+    private void OnDisable()
+    {
+        PongNetworkManager.OnServerAddedPlayer -= HandlePlayerAdded;
+        PongNetworkManager.OnServerRemovedPlayer -= HandlePlayerRemoved;
+    }
+
+    private void Update()
+    {
+        if (_isPlaying)
+            if (!NetworkClient.isConnected)
+                HandleDisconnection();
+    }
+
+    private void HandleDisconnection()
+    {
+        StopMatch();
+        OnMatchInterrupted?.Invoke();
     }
 
     private void HandlePlayerAdded(int playerID, PongPlayer player)
@@ -41,6 +61,20 @@ public class MatchManager : MonoBehaviour
 
         //Invoke Callback
         OnMatchCannotStart?.Invoke();
+
+        if(_isPlaying)
+        {
+            StopMatch();
+            OnMatchInterrupted?.Invoke();
+        }
+    }
+
+    public void StopMatch()
+    {
+        Debug.LogError("Player Disconnected - Match stopped");
+        _matchController.ResetMatch();
+        _isPlaying = false;
+        NetworkManager.singleton?.StopHost();
     }
 
     public void StartMatch()
@@ -56,11 +90,5 @@ public class MatchManager : MonoBehaviour
         //Start Match Manager Match
         _matchController.StartMatch();
         _isPlaying = true;
-    }
-
-    public void StopMatch()
-    {
-        _matchController.ResetMatch();
-        _isPlaying = false;
     }
 }

@@ -11,6 +11,7 @@ public class MatchController : NetworkBehaviour
 {
     public static event Action OnMatchStop;
     public static event Action OnMatchStart;
+    public static event Action<string> OnPlayerWon;
 
     public delegate void ScoreCallback(int lScore, int rScore);
     public event ScoreCallback OnScoreChanged;
@@ -28,20 +29,25 @@ public class MatchController : NetworkBehaviour
     private int _lScore;
     [SyncVar(hook = "UpdateScoreR")]
     private int _rScore;
+    
 
     #region SERVER
     [Server]
     public override void OnStartServer()
     {
         _rTableBorder.OnBallCollision += assignScoreL;
-        _lTableBorder.OnBallCollision += assignScoreR;
+        _lTableBorder.OnBallCollision += AssignScoreR;
     }
 
     [Server]
     public void OnDisable()
     {
+
+        if (connectionToServer == null)
+            return;
+
         _rTableBorder.OnBallCollision -= assignScoreL;
-        _lTableBorder.OnBallCollision -= assignScoreR;
+        _lTableBorder.OnBallCollision -= AssignScoreR;
     }
 
     [Server]
@@ -49,23 +55,29 @@ public class MatchController : NetworkBehaviour
     {
         _lScore++;
         InvokeScoreChangeCallback();
+        
+        if (_lScore >= _scoreToWin)
+        {
+            StopMatch();
+            return;
+        }
 
         StartCoroutine(StartMatchDelay(5f));
-
-        if (_lScore >= _scoreToWin)
-            StopMatch();
     }
 
     [Server]
-    private void assignScoreR()
+    private void AssignScoreR()
     {
         _rScore++;
         InvokeScoreChangeCallback();
 
-        StartCoroutine(StartMatchDelay(5f));
-
         if (_rScore >= _scoreToWin)
+        {
             StopMatch();
+            return;
+        }
+
+        StartCoroutine(StartMatchDelay(5f));
     }
 
     [Server]
@@ -96,7 +108,7 @@ public class MatchController : NetworkBehaviour
     public void StopMatch()
     {
         ResetPositions();
-        EndMatchDelay(5f);
+        StartCoroutine(EndMatchDelay(5f));
     }
 
     [Server]
@@ -137,14 +149,17 @@ public class MatchController : NetworkBehaviour
 
         ResetPositions();
         yield return new WaitForSeconds(delayTime);
+        InvokePlayerWon(_lScore > _rScore ? "Player 0 Won" : "Player 1 Won");
+        yield return new WaitForSeconds(delayTime);
         InvokeEndCallback();
     }
-
     #endregion
 
     #region CLIENT
+
     [ClientRpc] private void UpdateScoreL(int oldScore, int newScore) => _lScore = newScore;
     [ClientRpc] private void UpdateScoreR(int oldScore, int newScore) => _rScore = newScore;
+    [ClientRpc] private void InvokePlayerWon(string playerName) => OnPlayerWon?.Invoke(playerName);
     [ClientRpc] private void InvokeStartCallback() => OnMatchStart?.Invoke();
     [ClientRpc] private void InvokeEndCallback() => OnMatchStop?.Invoke();
     [ClientRpc] private void InvokeScoreChangeCallback() => OnScoreChanged?.Invoke(_lScore, _rScore);
