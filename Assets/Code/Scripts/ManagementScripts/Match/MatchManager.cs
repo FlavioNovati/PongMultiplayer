@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using UnityEngine;
-using UnityEngine.Serialization;
 
 using Mirror;
 
@@ -11,6 +10,7 @@ public class MatchManager : MonoBehaviour
     public static event Action OnMatchCanStart;
     public static event Action OnMatchCannotStart;
     public static event Action OnMatchInterrupted;
+    public static event Action OnGameEnded;
 
     private Dictionary<int, PongPlayer> _playerDictionary;
     private MatchController _matchController;
@@ -24,24 +24,27 @@ public class MatchManager : MonoBehaviour
         _matchController = FindFirstObjectByType<MatchController>(FindObjectsInactive.Include);
         _matchController.OnControllerDisconnected += HandleDisconnection;
 
-        PongNetworkManager.OnServerAddedPlayer += HandlePlayerAdded;
         PongNetworkManager.OnServerRemovedPlayer += HandlePlayerRemoved;
+        PongNetworkManager.OnServerAddedPlayer += HandlePlayerAdded;
         NetworkClient.OnDisconnectedEvent += HandleDisconnection;
-        
+        MatchController.OnMatchStop += StopMatch;
     }
 
     private void OnDisable()
     {
         _matchController.OnControllerDisconnected -= HandleDisconnection;
-        PongNetworkManager.OnServerAddedPlayer -= HandlePlayerAdded;
         PongNetworkManager.OnServerRemovedPlayer -= HandlePlayerRemoved;
+        PongNetworkManager.OnServerAddedPlayer -= HandlePlayerAdded;
         NetworkClient.OnDisconnectedEvent -= HandleDisconnection;
+        MatchController.OnMatchStop -= StopMatch;
     }
 
     private void HandleDisconnection()
     {
+        if(_isPlaying)
+            OnMatchInterrupted?.Invoke();
+
         StopMatch();
-        OnMatchInterrupted?.Invoke();
     }
 
     private void HandlePlayerAdded(int playerID, PongPlayer player)
@@ -62,16 +65,21 @@ public class MatchManager : MonoBehaviour
 
         if(_isPlaying)
         {
-            StopMatch();
             OnMatchInterrupted?.Invoke();
+            StopMatch();
         }
     }
-
+    
     public void StopMatch()
     {
+        Debug.LogError("MatchStopped");
         _matchController.ResetMatch();
         _isPlaying = false;
-        NetworkManager.singleton?.StopHost();
+
+        NetworkManager.singleton.StopHost();
+        NetworkManager.singleton.StopClient();
+
+        OnGameEnded?.Invoke();
     }
 
     public void StartMatch()

@@ -1,11 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
 
 using Mirror;
-using Unity.VisualScripting;
-using System.Collections;
 
 public class MatchController : NetworkBehaviour
 {
@@ -149,7 +148,6 @@ public class MatchController : NetworkBehaviour
         _rRacket.SetPause(true);
 
         ResetPositions();
-        yield return new WaitForSeconds(delayTime);
         InvokePlayerWon(_lScore > _rScore ? "Player 0 Won" : "Player 1 Won");
         yield return new WaitForSeconds(delayTime);
         InvokeEndCallback();

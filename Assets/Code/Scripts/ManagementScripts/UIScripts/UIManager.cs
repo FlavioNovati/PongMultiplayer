@@ -1,7 +1,4 @@
 #if UNITY_EDITOR
-using Mirror;
-using System;
-using Unity.VisualScripting;
 using UnityEditor;
 #endif
 
@@ -21,6 +18,7 @@ public class UIManager : MonoBehaviour
         MatchController.OnMatchStart += SetGameUI;
         MatchController.OnMatchStop += SetTitleUI;
         MatchManager.OnMatchInterrupted += SetDisconnetUI;
+        MatchManager.OnGameEnded += SetTitleUI;
     }
 
     private void OnDisable()
