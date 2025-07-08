@@ -23,10 +23,10 @@ public class PongNetworkManager : NetworkManager
         base.OnClientConnect();
         ClientOnConnected?.Invoke();
     }
-
-    public override void OnClientDisconnect()
+    
+    public override void OnStopClient()
     {
-        base.OnClientDisconnect();
+        base.OnStopClient();
         ClientOnDisconnected?.Invoke();
     }
 

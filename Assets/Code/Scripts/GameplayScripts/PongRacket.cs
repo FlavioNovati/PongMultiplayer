@@ -4,10 +4,12 @@ using Mirror;
 public class PongRacket : NetworkBehaviour
 {
     [SerializeField] private float _speed = 0.15f;
+
     private PongPlayer _assignedPlayer;
     private Vector3 _startPosition;
-
     private bool _paused = false;
+
+    private float _linearSpeed;
 
     public override void OnStartServer()
     {
@@ -22,6 +24,8 @@ public class PongRacket : NetworkBehaviour
             return;
 
         transform.position += direction * _speed * Time.deltaTime;
+
+        _linearSpeed = direction.magnitude * _speed * Time.deltaTime;
     }
     
     [Server]

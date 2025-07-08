@@ -240,7 +240,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Disconnected From Server
+  m_text: An Error Occurred
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4439,8 +4439,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9c9147577dde845a7fe4b1bec1f204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _joinTab: {fileID: 6956561363846544959}
   _mainTab: {fileID: 6446725386306749788}
+  _joinTab: {fileID: 6956561363846544959}
+  _hostTab: {fileID: 7008487043018123464}
+  _lobbyTab: {fileID: 7467705886671924078}
 --- !u!1 &8062798540287018143
 GameObject:
   m_ObjectHideFlags: 0

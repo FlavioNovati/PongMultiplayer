@@ -22,22 +22,20 @@ public class MatchManager : MonoBehaviour
         _playerDictionary = new Dictionary<int, PongPlayer>();
 
         _matchController = FindFirstObjectByType<MatchController>(FindObjectsInactive.Include);
+        _matchController.OnControllerDisconnected += HandleDisconnection;
 
         PongNetworkManager.OnServerAddedPlayer += HandlePlayerAdded;
         PongNetworkManager.OnServerRemovedPlayer += HandlePlayerRemoved;
+        NetworkClient.OnDisconnectedEvent += HandleDisconnection;
+        
     }
 
     private void OnDisable()
     {
+        _matchController.OnControllerDisconnected -= HandleDisconnection;
         PongNetworkManager.OnServerAddedPlayer -= HandlePlayerAdded;
         PongNetworkManager.OnServerRemovedPlayer -= HandlePlayerRemoved;
-    }
-
-    private void Update()
-    {
-        if (_isPlaying)
-            if (!NetworkClient.isConnected)
-                HandleDisconnection();
+        NetworkClient.OnDisconnectedEvent -= HandleDisconnection;
     }
 
     private void HandleDisconnection()
@@ -71,7 +69,6 @@ public class MatchManager : MonoBehaviour
 
     public void StopMatch()
     {
-        Debug.LogError("Player Disconnected - Match stopped");
         _matchController.ResetMatch();
         _isPlaying = false;
         NetworkManager.singleton?.StopHost();

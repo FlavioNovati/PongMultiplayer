@@ -12,9 +12,10 @@ public class MatchController : NetworkBehaviour
     public static event Action OnMatchStop;
     public static event Action OnMatchStart;
     public static event Action<string> OnPlayerWon;
-
+    
     public delegate void ScoreCallback(int lScore, int rScore);
     public event ScoreCallback OnScoreChanged;
+    public event Action OnControllerDisconnected;
 
     [SerializeField] private PongRacket _lRacket;
     [SerializeField] private PongRacket _rRacket;
@@ -156,7 +157,7 @@ public class MatchController : NetworkBehaviour
     #endregion
 
     #region CLIENT
-
+    public override void OnStopClient() => OnControllerDisconnected?.Invoke();
     [ClientRpc] private void UpdateScoreL(int oldScore, int newScore) => _lScore = newScore;
     [ClientRpc] private void UpdateScoreR(int oldScore, int newScore) => _rScore = newScore;
     [ClientRpc] private void InvokePlayerWon(string playerName) => OnPlayerWon?.Invoke(playerName);

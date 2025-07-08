@@ -35,7 +35,6 @@ public class UIJoinTab : MonoBehaviour
     public void JoinLobby()
     {
         string networkAddress = _networkAddressField.text;
-
         NetworkManager.singleton.networkAddress = networkAddress;
         NetworkManager.singleton.StartClient();
     }
