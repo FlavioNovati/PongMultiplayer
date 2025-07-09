@@ -57,10 +57,27 @@ public class PongBall : MonoBehaviour
     {
         //Get linear velocity
         Vector3 linearVelocity = _linearVelocity;
-        //Get average collision normal
-        Vector3 collisionNormal = collision.GetCollisionNormal();        
-        //Reflect linear velocity with normal
-        Vector3 newLinearVelocity = Vector3.Reflect(_linearVelocity, collisionNormal);
+        Vector3 newLinearVelocity;
+
+        //Collision with racket
+        if(collision.gameObject.TryGetComponent<PongRacket>(out PongRacket pongRacket) && pongRacket.GetLinearSpeed() != 0f)
+        {
+            //Get average collision normal
+            Vector3 collisionNormal = collision.GetCollisionNormal();
+            //Get Racket Velocity
+            Vector3 racketVelocity = new Vector3(0f, -pongRacket.GetLinearSpeed(), 0f);
+
+            newLinearVelocity = Vector3.Reflect(_linearVelocity, (collisionNormal + racketVelocity).normalized);
+        }
+        //Collision with boder
+        else
+        {
+            //Get average collision normal
+            Vector3 collisionNormal = collision.GetCollisionNormal();
+            //Reflect linear velocity with normal
+            newLinearVelocity = Vector3.Reflect(_linearVelocity, collisionNormal);
+        }
+
 
         //Increase linear velocity
         Vector3 linearVelocityIncrease = newLinearVelocity * _speedMultiplierOnCollision;

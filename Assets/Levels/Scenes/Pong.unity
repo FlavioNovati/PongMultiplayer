@@ -1432,7 +1432,7 @@ MonoBehaviour:
   _ball: {fileID: 1726870210}
   _lTableBorder: {fileID: 272308170}
   _rTableBorder: {fileID: 291462254}
-  _scoreToWin: 1
+  _scoreToWin: 11
 --- !u!114 &1631217944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1853,7 +1853,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8698288949051561444, guid: c4fcb2bd20ebcbd418f9aad07ca94098, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

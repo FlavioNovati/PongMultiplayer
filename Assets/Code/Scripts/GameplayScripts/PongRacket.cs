@@ -43,4 +43,7 @@ public class PongRacket : NetworkBehaviour
 
     [Server]
     public void SetPause(bool pause) => _paused = pause;
+
+    [Server]
+    public float GetLinearSpeed() => _linearSpeed;
 }

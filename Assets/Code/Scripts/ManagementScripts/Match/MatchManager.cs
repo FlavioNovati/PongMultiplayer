@@ -72,7 +72,6 @@ public class MatchManager : MonoBehaviour
     
     public void StopMatch()
     {
-        Debug.LogError("MatchStopped");
         _matchController.ResetMatch();
         _isPlaying = false;
 
