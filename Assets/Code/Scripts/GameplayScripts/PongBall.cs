@@ -67,6 +67,8 @@ public class PongBall : MonoBehaviour
             //Get Racket Velocity
             Vector3 racketVelocity = new Vector3(0f, -pongRacket.GetLinearSpeed(), 0f);
 
+            racketVelocity.x *= transform.position.x < 0 ? -1f : 1f;
+
             newLinearVelocity = Vector3.Reflect(_linearVelocity, (collisionNormal + racketVelocity).normalized);
         }
         //Collision with boder
